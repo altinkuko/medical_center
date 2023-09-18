@@ -12,8 +12,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @RequiredArgsConstructor
 public class MedicalConfig implements CommandLineRunner {
     private final UserRepository userRepository;
-    private final JdbcTemplate jdbcTemplate;
-
     @Override
     public void run(String... args) {
         if (userRepository.findByUsername("admin").isEmpty()) {
