@@ -19,6 +19,10 @@ public class GenericExceptions extends RuntimeException{
         return new GenericExceptions(String.format("Record with %s does not exist", id), 404);
     }
 
+    public static GenericExceptions usernameExists(String username){
+        return new GenericExceptions(String.format("Username %s exists", username), 500);
+    }
+
     public Integer getStatus() {
         return this.status;
     }

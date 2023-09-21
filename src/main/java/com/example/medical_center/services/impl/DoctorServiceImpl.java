@@ -16,10 +16,13 @@ import java.util.Optional;
 @Transactional
 public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
+
     @Override
     public Doctor create(Doctor doctor) {
-        if (doctor.getDoctorId() != null){
+        if (doctor.getDoctorId() != null) {
             throw GenericExceptions.idNotNull();
+        } else if (doctorRepository.existsByUsername(doctor.getUsername())) {
+            throw GenericExceptions.usernameExists(doctor.getUsername());
         } else {
             doctorRepository.save(doctor);
             return doctor;
@@ -28,8 +31,10 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public Doctor update(Doctor doctor) {
-        if (doctor.getDoctorId() == null){
+        if (doctor.getDoctorId() == null) {
             throw GenericExceptions.idIsNull();
+        } else if (doctorRepository.existsByUsername(doctor.getUsername())) {
+            throw GenericExceptions.usernameExists(doctor.getUsername());
         } else {
             doctorRepository.save(doctor);
             return doctor;
@@ -39,7 +44,7 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public Doctor findById(Long id) {
         Optional<Doctor> doctor = doctorRepository.findById(id);
-        return doctor.orElseThrow(()-> GenericExceptions.notFound(id));
+        return doctor.orElseThrow(() -> GenericExceptions.notFound(id));
     }
 
     @Override

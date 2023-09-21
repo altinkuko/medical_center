@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Doctor Details</title>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container">
+  <form th:action="@{/web/doctor/update}" th:method="post" th:object="${doctor}">
+    <input type="hidden" th:field="*{doctorId}"/>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="doctorName">Doctor Name:</label>
+          <input type="text" placeholder="Name" th:field="*{name}" class="form-control"
+                 id="doctorName">
+          <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="doctorSpec">Doctor Specialization:</label>
+          <input type="text" placeholder="Specialization" th:field="*{specialization}" class="form-control"
+                 id="doctorSpec">
+          <span th:if="${#fields.hasErrors('specialization')}" th:errors="*{specialization}" class="text-danger"></span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="username">Doctor Username:</label>
+          <input type="text" placeholder="username" th:field="*{username}" class="form-control"
+                 id="username">
+          <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></span>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <div class="form-group">
+          <input type="submit" value="Update Doctor" class="form-control btn btn-success">
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+</body>
+</html>

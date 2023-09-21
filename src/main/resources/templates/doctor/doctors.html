@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctors</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}">
+
+    <!-- Optionally, include Bootstrap JavaScript and jQuery -->
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.min.js}"></script>
+</head>
+<body>
+<div class="row">
+    <div class="col-sm-4 mb-5">
+        <div th:if="${#lists.isEmpty(doctors)}"><h2>Empty!</h2></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4">
+            <a th:href="@{/web/doctor/create}" class="btn btn-primary">
+                Create
+            </a>
+
+    </div>
+</div>
+<div class="row" th:if="!${#lists.isEmpty(doctors)}">
+    <div class="col-sm-6">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Doctor Name</th>
+                <th>Specialization</th>
+                <th>Username</th>
+                <th>Details</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr th:each="doctor: ${doctors}">
+                <td th:text="${doctor.getName()}"></td>
+                <td th:text="${doctor.getSpecialization()}"></td>
+                <td th:text="${doctor.getUsername()}"></td>
+                <td><a th:href="@{/web/doctor/details(id=${doctor.getDoctorId()})}" class="btn btn-info">Details</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
