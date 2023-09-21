@@ -1,6 +1,7 @@
 package com.example.medical_center.services.impl;
 
 import com.example.medical_center.dao.User;
+import com.example.medical_center.exceptions.GenericExceptions;
 import com.example.medical_center.repositories.UserRepository;
 import com.example.medical_center.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User entity) {
-        return null;
+        if (entity.getUserId() != null){
+            throw GenericExceptions.idNotNull();
+        } else {
+            userRepository.save(entity);
+            return entity;
+        }
     }
 
     @Override

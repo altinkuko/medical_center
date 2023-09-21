@@ -2,6 +2,7 @@ package com.example.medical_center.controllers;
 
 import com.example.medical_center.dao.User;
 import com.example.medical_center.services.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public User create(@RequestBody User user) {
+    public User create(@RequestBody @Valid User user) {
         return userService.create(user);
     }
 
