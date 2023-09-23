@@ -53,4 +53,10 @@ public class DoctorWebController {
             return "redirect:/web/doctor/all";
         }
     }
+    @GetMapping("/delete")
+    public String delete(@RequestParam Long id, Model model){
+        String message = doctorService.delete(id);
+        model.addAttribute("message", message);
+        return "/doctor/delete";
+    }
 }

@@ -41,6 +41,7 @@
                 <td th:text="${doctor.getSpecialization()}"></td>
                 <td th:text="${doctor.getUsername()}"></td>
                 <td><a th:href="@{/web/doctor/details(id=${doctor.getDoctorId()})}" class="btn btn-info">Details</a></td>
+                <td><a th:href="@{/web/doctor/delete(id=${doctor.getDoctorId()})}" class="btn btn-danger">Delete</a></td>
             </tr>
             </tbody>
         </table>
