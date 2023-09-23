@@ -11,8 +11,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
@@ -20,13 +23,24 @@ import java.util.Optional;
 public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final DoctorRepository doctorRepository;
+
     @Override
     public Appointment create(Appointment appointment, Long doctorId) {
-        if (appointment.getAppointmentId() != null){
+        if (appointment.getAppointmentId() != null) {
             throw GenericExceptions.idNotNull();
         } else {
             Optional<Doctor> doctor = doctorRepository.findById(doctorId);
-            if (doctor.isPresent()){
+            if (doctor.isPresent()) {
+                List<Appointment> appointments = doctor.get().getAppointments();
+                AtomicBoolean isTimeWrong = new AtomicBoolean(false);
+                if (!appointments.isEmpty()) {
+                    appointments.forEach(app -> {
+                        isTimeWrong.set(this.isTimeWrong(app, appointment.getBeginsAt(), appointment.getEndsAt()));
+                    });
+                    if (isTimeWrong.get()) {
+                        throw GenericExceptions.timeIsWrong();
+                    }
+                }
                 appointment.setDoctor(doctor.get());
                 appointment.setStatus(Status.CREATED);
                 appointmentRepository.save(appointment);
@@ -39,16 +53,29 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Appointment update(Appointment appointment, Long doctorId) {
-        if (appointment.getAppointmentId() == null){
+        if (appointment.getAppointmentId() == null) {
             throw GenericExceptions.idIsNull();
         } else {
-            Optional<Doctor> doctor = doctorRepository.findById(doctorId);
-            if (doctor.isPresent()){
-                appointment.setDoctor(doctor.get());
-                appointmentRepository.save(appointment);
-                return appointment;
+            Optional<Appointment> existingAppointment = appointmentRepository.findById(appointment.getAppointmentId());
+            if (existingAppointment.isPresent()) {
+                Optional<Doctor> doctor = doctorRepository.findById(doctorId);
+                if (doctor.isPresent()) {
+                    List<Appointment> appointments = doctor.get().getAppointments();
+                    AtomicBoolean isTimeWrong = new AtomicBoolean(false);
+                    if (!appointments.isEmpty()) {
+                        appointments.forEach(app -> isTimeWrong.set(this.isTimeWrong(app, appointment.getBeginsAt(), appointment.getEndsAt())));
+                        if (isTimeWrong.get()) {
+                            throw GenericExceptions.timeIsWrong();
+                        }
+                    }
+                    appointment.setDoctor(doctor.get());
+                    appointmentRepository.save(appointment);
+                    return appointment;
+                } else {
+                    throw GenericExceptions.notFound(doctorId);
+                }
             } else {
-                throw GenericExceptions.notFound(doctorId);
+                throw GenericExceptions.notFound(appointment.getAppointmentId());
             }
         }
     }
@@ -56,7 +83,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public Appointment findById(Long id) {
         Optional<Appointment> appointment = appointmentRepository.findById(id);
-        return appointment.orElseThrow(()-> GenericExceptions.notFound(id));
+        return appointment.orElseThrow(() -> GenericExceptions.notFound(id));
     }
 
     @Override
@@ -68,5 +95,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     public String delete(Long id) {
         appointmentRepository.deleteById(id);
         return String.format("Record with id %d deleted", id);
+    }
+
+    private Boolean isTimeWrong(Appointment appointment, LocalDateTime start, LocalDateTime end) {
+        return ((start.isAfter(appointment.getBeginsAt()) && start.isBefore(appointment.getEndsAt()))
+                || (end.isAfter(appointment.getBeginsAt()) && end.isBefore(appointment.getEndsAt()))
+                || (start.isBefore(appointment.getBeginsAt()) && end.isAfter(appointment.getEndsAt()))
+                || start.isAfter(end));
     }
 }

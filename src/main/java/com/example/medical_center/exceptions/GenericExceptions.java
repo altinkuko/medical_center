@@ -22,6 +22,11 @@ public class GenericExceptions extends RuntimeException{
         String message = String.format("Record with username %s exists", username);
         return new GenericExceptions(message, 400);
     }
+
+    public static GenericExceptions timeIsWrong() {
+        return new GenericExceptions("Please select another time", 400);
+    }
+
     public Integer getStatus() {
         return status;
     }
