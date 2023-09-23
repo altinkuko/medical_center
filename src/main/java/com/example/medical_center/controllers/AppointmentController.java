@@ -24,13 +24,13 @@ public class AppointmentController {
     }
 
     @PostMapping("/create")
-    public Appointment create(@RequestBody Appointment appointment) {
-        return appointmentService.create(appointment);
+    public Appointment create(@RequestBody Appointment appointment, @RequestParam Long doctorId) {
+        return appointmentService.create(appointment, doctorId);
     }
 
     @PutMapping("/update")
-    public Appointment update(@RequestBody Appointment appointment) {
-        return appointmentService.update(appointment);
+    public Appointment update(@RequestBody Appointment appointment, Long doctorId) {
+        return appointmentService.update(appointment, doctorId);
     }
 
     @DeleteMapping("/delete")
