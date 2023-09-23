@@ -20,6 +20,8 @@ public class DoctorServiceImpl implements DoctorService {
     public Doctor create(Doctor doctor) {
         if (doctor.getDoctorId() != null){
             throw GenericExceptions.idNotNull();
+        } else if(doctorRepository.existsByUsername(doctor.getUsername())) {
+            throw GenericExceptions.usernameExists(doctor.getUsername());
         } else {
             doctorRepository.save(doctor);
             return doctor;
@@ -31,8 +33,15 @@ public class DoctorServiceImpl implements DoctorService {
         if (doctor.getDoctorId() == null){
             throw GenericExceptions.idIsNull();
         } else {
-            doctorRepository.save(doctor);
-            return doctor;
+            Optional<Doctor> optionalDoctor = doctorRepository.findById(doctor.getDoctorId());
+            if (optionalDoctor.isPresent() && optionalDoctor.get().getUsername().equals(doctor.getUsername())){
+                doctorRepository.save(doctor);
+                return doctor;
+            } else if (doctorRepository.existsByUsername(doctor.getUsername())) {
+                throw GenericExceptions.usernameExists(doctor.getUsername());
+            } else {
+                throw GenericExceptions.notFound(doctor.getDoctorId());
+            }
         }
     }
 
@@ -49,7 +58,14 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public String delete(Long id) {
-        doctorRepository.deleteById(id);
-        return String.format("Record with id %d deleted", id);
+        Optional<Doctor> doctor = doctorRepository.findById(id);
+        if (doctor.isPresent() && doctor.get().getAppointments().isEmpty()) {
+            doctorRepository.deleteById(id);
+            return String.format("Record with id %d deleted", id);
+        } else if (doctor.isPresent() && !doctor.get().getAppointments().isEmpty()){
+            return "This record cannot be deleted";
+        } else {
+            throw GenericExceptions.notFound(id);
+        }
     }
 }
