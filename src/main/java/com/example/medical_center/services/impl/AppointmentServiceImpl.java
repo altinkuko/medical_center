@@ -32,14 +32,12 @@ public class AppointmentServiceImpl implements AppointmentService {
             Optional<Doctor> doctor = doctorRepository.findById(doctorId);
             if (doctor.isPresent()) {
                 List<Appointment> appointments = doctor.get().getAppointments();
-                AtomicBoolean isTimeWrong = new AtomicBoolean(false);
                 if (!appointments.isEmpty()) {
                     appointments.forEach(app -> {
-                        isTimeWrong.set(this.isTimeWrong(app, appointment.getBeginsAt(), appointment.getEndsAt()));
+                        if (this.isTimeWrong(app, appointment.getBeginsAt(), appointment.getEndsAt())) {
+                            throw GenericExceptions.timeIsWrong();
+                        }
                     });
-                    if (isTimeWrong.get()) {
-                        throw GenericExceptions.timeIsWrong();
-                    }
                 }
                 appointment.setDoctor(doctor.get());
                 appointment.setStatus(Status.CREATED);
@@ -61,12 +59,12 @@ public class AppointmentServiceImpl implements AppointmentService {
                 Optional<Doctor> doctor = doctorRepository.findById(doctorId);
                 if (doctor.isPresent()) {
                     List<Appointment> appointments = doctor.get().getAppointments();
-                    AtomicBoolean isTimeWrong = new AtomicBoolean(false);
                     if (!appointments.isEmpty()) {
-                        appointments.forEach(app -> isTimeWrong.set(this.isTimeWrong(app, appointment.getBeginsAt(), appointment.getEndsAt())));
-                        if (isTimeWrong.get()) {
-                            throw GenericExceptions.timeIsWrong();
-                        }
+                        appointments.forEach(app -> {
+                            if (this.isTimeWrong(app, appointment.getBeginsAt(), appointment.getEndsAt())) {
+                                throw GenericExceptions.timeIsWrong();
+                            }
+                        });
                     }
                     appointment.setDoctor(doctor.get());
                     appointmentRepository.save(appointment);
