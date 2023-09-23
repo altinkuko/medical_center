@@ -23,6 +23,10 @@ public class GenericExceptions extends RuntimeException{
         return new GenericExceptions(String.format("Username %s exists", username), 500);
     }
 
+    public static GenericExceptions timeIsWrong(){
+        return new GenericExceptions("Please select another time", 400);
+    }
+
     public Integer getStatus() {
         return this.status;
     }
