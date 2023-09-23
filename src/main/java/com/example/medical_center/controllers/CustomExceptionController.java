@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @ControllerAdvice
-@Controller
 public class CustomExceptionController {
 //    @ExceptionHandler(GenericExceptions.class)
 //    public ResponseEntity<String> customException(GenericExceptions exceptions){
