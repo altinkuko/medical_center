@@ -35,7 +35,8 @@ public class DoctorServiceImpl implements DoctorService {
             throw GenericExceptions.idIsNull();
         } else {
             Optional<Doctor> optionalDoctor = doctorRepository.findById(doctor.getDoctorId());
-            if (optionalDoctor.isPresent() && optionalDoctor.get().getUsername().equals(doctor.getUsername())){
+            if ((optionalDoctor.isPresent() && optionalDoctor.get().getUsername().equals(doctor.getUsername()))
+                    || !doctorRepository.existsByUsername(doctor.getUsername())){
                 doctorRepository.save(doctor);
                 return doctor;
             } else if (doctorRepository.existsByUsername(doctor.getUsername())) {
