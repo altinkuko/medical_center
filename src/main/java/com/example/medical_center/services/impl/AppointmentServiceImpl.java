@@ -95,10 +95,18 @@ public class AppointmentServiceImpl implements AppointmentService {
         return String.format("Record with id %d deleted", id);
     }
 
+    @Override
+    public List<Appointment> getByDoctorAfter(Long doctorId) {
+        return appointmentRepository.getByDoctorAndAfter(doctorId, LocalDateTime.now());
+    }
+
     private Boolean isTimeWrong(Appointment appointment, LocalDateTime start, LocalDateTime end) {
-        return ((start.isAfter(appointment.getBeginsAt()) && start.isBefore(appointment.getEndsAt()))
+        return ((start == null || end == null)
+                || (start.isAfter(appointment.getBeginsAt()) && start.isBefore(appointment.getEndsAt()))
                 || (end.isAfter(appointment.getBeginsAt()) && end.isBefore(appointment.getEndsAt()))
                 || (start.isBefore(appointment.getBeginsAt()) && end.isAfter(appointment.getEndsAt()))
+                || (start.isEqual(appointment.getBeginsAt()) || start.isEqual(appointment.getEndsAt()))
+                || (end.isEqual(appointment.getBeginsAt()) || end.isEqual(appointment.getEndsAt()))
                 || start.isAfter(end));
     }
 }
