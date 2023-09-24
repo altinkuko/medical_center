@@ -23,7 +23,7 @@ public class GenericExceptions extends RuntimeException{
         return new GenericExceptions(message, 400);
     }
 
-    public static GenericExceptions timeIsWrong(){
+    public static GenericExceptions timeIsWrong() {
         return new GenericExceptions("Please select another time", 400);
     }
 

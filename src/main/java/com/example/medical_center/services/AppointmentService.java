@@ -10,4 +10,5 @@ public interface AppointmentService {
     Appointment findById(Long id);
     List<Appointment> findAll();
     String delete(Long id);
+    List<Appointment> getByDoctorAfter(Long doctorId);
 }
