@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @ControllerAdvice
 public class CustomExceptionController {
-//    @ExceptionHandler(GenericExceptions.class)
-//    public ResponseEntity<String> customException(GenericExceptions exceptions){
-//        return new ResponseEntity<>(exceptions.getMessage(), HttpStatus.valueOf(exceptions.getStatus()));
-//    }
     @ExceptionHandler(GenericExceptions.class)
-    public String customError(Model model, GenericExceptions exceptions){
-        model.addAttribute("errorDescription", exceptions.getMessage());
-        return "/error/error";
+    public ResponseEntity<String> customException(GenericExceptions exceptions){
+        return new ResponseEntity<>(exceptions.getMessage(), HttpStatus.valueOf(exceptions.getStatus()));
     }
+//    @ExceptionHandler(GenericExceptions.class)
+//    public String customError(Model model, GenericExceptions exceptions){
+//        model.addAttribute("errorDescription", exceptions.getMessage());
+//        return "/error/error";
+//    }
 }

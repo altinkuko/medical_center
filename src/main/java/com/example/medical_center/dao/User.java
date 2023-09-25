@@ -20,6 +20,10 @@ public class User {
     @Column(unique = true)
     @NotNull(message = "Username must not be null")
     private String username;
+    private String name;
+    private String password;
+    private String email;
+    private Boolean active;
     @Enumerated(EnumType.STRING)
     private Role role;
 

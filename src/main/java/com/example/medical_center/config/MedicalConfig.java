@@ -7,12 +7,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @RequiredArgsConstructor
 public class MedicalConfig implements CommandLineRunner {
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
     @Value("${profile.message}")
     private String message;
     @Override
@@ -21,12 +24,17 @@ public class MedicalConfig implements CommandLineRunner {
             User user = User.builder()
                     .role(Role.ROLE_ADMIN)
                     .username("admin")
+                    .password(passwordEncoder.encode("admin"))
+                    .active(true)
+                    .email("test@test.com")
+                    .name("Administrator")
                     .build();
             userRepository.save(user);
             System.out.println("U kry");
         }
         System.out.println(message);
     }
+
 //
 //    @Bean
 //    @Scope("singleton")

@@ -2,7 +2,11 @@ package com.example.medical_center.controllers;
 
 import com.example.medical_center.dao.Doctor;
 import com.example.medical_center.services.DoctorService;
+import com.example.medical_center.static_data.Message;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,7 +38,7 @@ public class DoctorController {
     }
 
     @DeleteMapping("/delete")
-    public String deleteById(@RequestParam Long id) {
-        return doctorService.delete(id);
+    public ResponseEntity<Message> deleteById(@RequestParam Long id) {
+        return ResponseEntity.ok(new Message(doctorService.delete(id)));
     }
 }
