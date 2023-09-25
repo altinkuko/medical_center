@@ -4,6 +4,7 @@ import com.example.medical_center.dao.User;
 import com.example.medical_center.exceptions.GenericExceptions;
 import com.example.medical_center.repositories.UserRepository;
 import com.example.medical_center.services.UserService;
+import com.example.medical_center.static_data.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,6 +24,8 @@ public class UserServiceImpl implements UserService {
             throw GenericExceptions.idNotNull();
         } else {
             entity.setPassword(passwordEncoder.encode(entity.getPassword()));
+            entity.setRole(Role.ROLE_EMPLOYEE);
+            entity.setActive(true);
             userRepository.save(entity);
             return entity;
         }
